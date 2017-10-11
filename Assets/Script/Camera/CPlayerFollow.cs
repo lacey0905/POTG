@@ -12,7 +12,7 @@ public class CPlayerFollow : MonoBehaviour {
     void Start()
     {
         // 카메라 위치와 타겟의 위치 계산
-        m_Offset = transform.position - m_Target.position;
+        m_Offset = new Vector3(0, 25f, -11f);
     }
 
     void FixedUpdate()
@@ -23,4 +23,10 @@ public class CPlayerFollow : MonoBehaviour {
         // 카메라 위치를 부드럽게 조정 함
         transform.position = Vector3.Lerp(transform.position, targetCamPos, m_fSmoothing * Time.deltaTime);
     }
+
+    public void setPlayerFollow(Transform _player) {
+        Debug.Log(_player);
+        m_Target = _player;
+    }
+
 }

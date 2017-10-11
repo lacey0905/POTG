@@ -13,8 +13,11 @@ public class CPlayerContoller : MonoBehaviour {
     int m_iFloorMask;               // 레이캐스트 좌표를 얻을 바닥
     float m_fCamRayLength = 100f;   // 레이캐스트 레이저 길이
 
+    bool isMyPlayer = false;
 
-    Gun Gun;
+    public void setMyPlayer() {
+        isMyPlayer = true;
+    }
 
     void Awake()
     {
@@ -25,30 +28,37 @@ public class CPlayerContoller : MonoBehaviour {
         m_PlayerAnim = GetComponent<Animator>();
         m_PlayerRigidBody = GetComponent<Rigidbody>();
 
-        Gun = GetComponentInChildren<Gun>();
+        //Gun = GetComponentInChildren<Gun>();
     }
 
+
     void FixedUpdate() {
-        // 키 입력
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
 
-        // 캐릭터 이동
-        setPlayerMovement(h, v);
-
-        // 캐릭터 회전
-        setPlayerTurning();
-
-        // 캐릭터 애니메이션
-        Animating(h, v);
-
-        if (Gun.getIsShoot())
+        if (isMyPlayer)
         {
-            m_PlayerAnim.SetBool("IsShoot", true);
+            // 키 입력
+            float h = Input.GetAxisRaw("Horizontal");
+            float v = Input.GetAxisRaw("Vertical");
+
+            // 캐릭터 이동
+            setPlayerMovement(h, v);
+
+            // 캐릭터 회전
+            setPlayerTurning();
+
+            // 캐릭터 애니메이션
+            Animating(h, v);
+            /*
+            if (Gun.getIsShoot())
+            {
+                m_PlayerAnim.SetBool("IsShoot", true);
+            }
+            else {
+                m_PlayerAnim.SetBool("IsShoot", false);
+            }\
+            */
         }
-        else {
-            m_PlayerAnim.SetBool("IsShoot", false);
-        }
+        
     }
 
     // 캐릭터 이동 셋팅
@@ -59,6 +69,8 @@ public class CPlayerContoller : MonoBehaviour {
     }
 
     void setPlayerTurning() {
+
+
         // 마우스 포인터 받기
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -79,6 +91,8 @@ public class CPlayerContoller : MonoBehaviour {
             m_PlayerRigidBody.MoveRotation(newRotation);
 
         }
+
+
 
     }
 
