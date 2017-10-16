@@ -5,6 +5,8 @@ using UnityEngine;
 public class CPlayerState : MonoBehaviour {
 
     public int m_iPlayerHP = 100;
+    
+
 
     public int getPlayerHP() {
         return m_iPlayerHP;
