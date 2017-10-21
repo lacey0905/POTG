@@ -18,21 +18,46 @@ public class CPlayerFollow : MonoBehaviour {
 
     void FixedUpdate()
     {
+
+
+        Vector3 RayPoint = m_Target.GetComponent<CPlayerContoller>().getRayPoint();
+
+        Vector3 dPos = m_Target.position;
+
+        Debug.Log(RayPoint);
+
         if (m_Target != null)
         {
             // 타겟을 기준으로 카메라 위치 조정
-            Vector3 targetCamPos = m_Target.position + m_Offset;
+
+            Vector3 temp = m_Target.position - RayPoint;
+
+            Vector3 targetCamPos = m_Target.position + m_Offset + RayPoint/2.5f;
+
 
             targetCamPos.y = m_Offset.y;
 
             // 카메라 위치를 부드럽게 조정 함
             transform.position = Vector3.Lerp(transform.position, targetCamPos, m_fSmoothing * Time.deltaTime);
+
+            if (Input.GetKey("c"))
+            {
+                transform.RotateAround(transform.position, new Vector3(0.0f, -1.0f, 0.0f), 10f + Time.deltaTime);
+            }
+
         }
+
+        
     }
 
-    public void SetPlayerFollow(Transform _player) {
+
+
+    public void SetPlayerFollow(Transform _player)
+    {
         Debug.Log(_player);
         m_Target = _player;
     }
+
+
 
 }

@@ -10,8 +10,8 @@ public class CPlayerContoller : MonoBehaviour {
     Animator        m_PlayerAnim;           // 애니메이션
     Rigidbody       m_PlayerRigidBody;
 
-    int m_iFloorMask;                           //  레이캐스트 좌표를 얻을 바닥
-    float m_fCamRayLength = 100f;                 //  레이캐스트 레이저 길이
+    public int m_iFloorMask;                           //  레이캐스트 좌표를 얻을 바닥
+    public float m_fCamRayLength = 100f;                 //  레이캐스트 레이저 길이
 
     void Awake()
     {
@@ -21,7 +21,6 @@ public class CPlayerContoller : MonoBehaviour {
 
         // Floor 마스크 레이어
         m_iFloorMask = LayerMask.GetMask("Floor");
-
     }
 
     void FixedUpdate()
@@ -40,8 +39,17 @@ public class CPlayerContoller : MonoBehaviour {
     {
         m_PlayerMovement.Set(h, 0f, v);
         m_PlayerMovement = m_PlayerMovement.normalized * m_fSpeed * Time.smoothDeltaTime;
-        m_PlayerRigidBody.MovePosition(transform.position + m_PlayerMovement);
+
+        //transform.Translate(m_PlayerMovement);
+
+        Vector3 temp = transform.position;
+
+        transform.localPosition = new Vector3(temp.x + m_PlayerMovement.x, temp.y + m_PlayerMovement.y, temp.z + m_PlayerMovement.z);
+
+        //m_PlayerRigidBody.MovePosition(transform.position + m_PlayerMovement);
     }
+
+    public Vector3 RayPoint; 
 
     // 캐릭터 회전 레이캐스트
     void SetPlayerTurning()
@@ -60,12 +68,19 @@ public class CPlayerContoller : MonoBehaviour {
 
             playerToMouse.y = 0f;
 
+            RayPoint = playerToMouse;
+
             Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
 
             // 캐릭터를 회전 함
             m_PlayerRigidBody.MoveRotation(newRotation);
         }
     }
+
+    public Vector3 getRayPoint() {
+        return RayPoint;
+    }
+
 
     void SetPlayerAnimating(float h, float v)
     {
