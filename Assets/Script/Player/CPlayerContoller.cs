@@ -4,23 +4,26 @@ using UnityEngine;
 
 public class CPlayerContoller : MonoBehaviour {
 
-    public  float   m_fSpeed = 6.0f;        // 캐릭터 스피드
+    public  float   m_fSpeed = 6.0f;            // 캐릭터 스피드
 
-    Vector3         m_PlayerMovement;       //캐릭터 좌표
-    Animator        m_PlayerAnim;           // 애니메이션
+    Vector3         m_PlayerMovement;           // 캐릭터 좌표
+    Animator        m_PlayerAnim;               // 애니메이션
     Rigidbody       m_PlayerRigidBody;
 
-    public int m_iFloorMask;                           //  레이캐스트 좌표를 얻을 바닥
-    public float m_fCamRayLength = 100f;                 //  레이캐스트 레이저 길이
+    Transform       m_MainCamera;               // 메인 카메라
+    Vector3         m_CameraMovePos;            // 카메라 기준 이동 방향
+
+    public Vector3  m_RayPoint;                   //  레이캐스트 포인터 좌표
+    public int      m_iFloorMask;               //  레이캐스트 좌표를 얻을 바닥
+    public float    m_fCamRayLength = 100f;     //  레이캐스트 레이저 길이
 
     void Awake()
     {
-        //m_PlayerMovement =  GetComponent<Transform>();
         m_PlayerRigidBody = GetComponent<Rigidbody>();
         m_PlayerAnim =  GetComponent<Animator>();
-
-        // Floor 마스크 레이어
-        m_iFloorMask = LayerMask.GetMask("Floor");
+        
+        m_iFloorMask = LayerMask.GetMask("Floor");  // Floor 마스크 레이어
+        m_MainCamera = Camera.main.transform;       // 메인 카메라
     }
 
     void FixedUpdate()
@@ -37,19 +40,21 @@ public class CPlayerContoller : MonoBehaviour {
     // 캐릭터 이동 셋팅
     void SetPlayerMovement(float h, float v)
     {
-        m_PlayerMovement.Set(h, 0f, v);
-        m_PlayerMovement = m_PlayerMovement.normalized * m_fSpeed * Time.smoothDeltaTime;
-
-        //transform.Translate(m_PlayerMovement);
-
-        Vector3 temp = transform.position;
-
-        transform.localPosition = new Vector3(temp.x + m_PlayerMovement.x, temp.y + m_PlayerMovement.y, temp.z + m_PlayerMovement.z);
-
-        //m_PlayerRigidBody.MovePosition(transform.position + m_PlayerMovement);
+        // 방향키가 눌렸을 때
+        if (h != 0 || v != 0) {
+            // 좌우 버튼을 눌렀을 때
+            if (h != 0) {
+                m_CameraMovePos = new Vector3(m_MainCamera.right.x * h, 0, m_MainCamera.right.z * h);
+                transform.position += m_CameraMovePos * m_fSpeed * Time.smoothDeltaTime;
+            }
+            // 상하 버튼을 눌렀을 때
+            if (v != 0)
+            {
+                m_CameraMovePos = new Vector3(m_MainCamera.up.x * v, 0, m_MainCamera.up.z * v);
+                transform.position += m_CameraMovePos * m_fSpeed * Time.smoothDeltaTime;
+            }
+        }
     }
-
-    public Vector3 RayPoint; 
 
     // 캐릭터 회전 레이캐스트
     void SetPlayerTurning()
@@ -68,7 +73,7 @@ public class CPlayerContoller : MonoBehaviour {
 
             playerToMouse.y = 0f;
 
-            RayPoint = playerToMouse;
+            m_RayPoint = playerToMouse;
 
             Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
 
@@ -78,11 +83,10 @@ public class CPlayerContoller : MonoBehaviour {
     }
 
     public Vector3 getRayPoint() {
-        return RayPoint;
+        return m_RayPoint;
     }
 
-
-    void SetPlayerAnimating(float h, float v)
+    public void SetPlayerAnimating(float h, float v)
     {
         // 이동 여부 검사
         bool walking = h != 0f || v != 0f;
