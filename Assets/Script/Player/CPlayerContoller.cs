@@ -13,9 +13,12 @@ public class CPlayerContoller : MonoBehaviour {
     Transform       m_MainCamera;               // 메인 카메라
     Vector3         m_CameraMovePos;            // 카메라 기준 이동 방향
 
-    public Vector3  m_RayPoint;                   //  레이캐스트 포인터 좌표
+    public Vector3  m_RayPoint;                 //  레이캐스트 포인터 좌표
     public int      m_iFloorMask;               //  레이캐스트 좌표를 얻을 바닥
     public float    m_fCamRayLength = 100f;     //  레이캐스트 레이저 길이
+
+    public LineRenderer Line;
+    LineRenderer temp;
 
     void Awake()
     {
@@ -24,6 +27,9 @@ public class CPlayerContoller : MonoBehaviour {
         
         m_iFloorMask = LayerMask.GetMask("Floor");  // Floor 마스크 레이어
         m_MainCamera = Camera.main.transform;       // 메인 카메라
+
+        temp = Instantiate(Line, transform.position, Quaternion.identity);
+
     }
 
     void FixedUpdate()
@@ -35,6 +41,18 @@ public class CPlayerContoller : MonoBehaviour {
         SetPlayerMovement(h, v);
         SetPlayerTurning();
         SetPlayerAnimating(h, v);
+
+        // 마우스 우클릭 했을 때
+        if (Input.GetMouseButton(1))
+        {
+            temp.SetColors(Color.red, Color.yellow);
+            temp.SetWidth(0.1f, 0.1f);
+
+            //라인렌더러 처음위치 나중위치
+            temp.SetPosition(0, transform.position);
+            temp.SetPosition(1, transform.position + m_RayPoint);
+
+        }
 
 
     }
@@ -70,6 +88,7 @@ public class CPlayerContoller : MonoBehaviour {
         // 바닥에 충돌하면 실행
         if (Physics.Raycast(camRay, out floorHit, m_fCamRayLength, m_iFloorMask))
         {
+
             // 마우스 포인터에서 캐릭터 거리
             Vector3 playerToMouse = floorHit.point - transform.position;
 
