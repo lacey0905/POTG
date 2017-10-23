@@ -3,26 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CPlayerFollow : MonoBehaviour {
+    
+    public Transform    m_Target;               // 카메라가 따라다닐 타겟 지정
+    public Vector3      m_TargetPos;            // 타겟의 포지션
+    public float        m_fSmoothing = 10.0f;   // 따라다닐 때 부드러운 정도
 
+    private CPlayerContoller    m_TargetContoller;
+    private Vector3             m_RayPoint;
 
-    public float m_fSmoothing = 10.0f;   // 따라다닐 때 부드러운 정도
+    private Camera      m_MainCamera;
+    private CPlayerAim  m_PlayerAim;
+    private Transform   m_TargetFollowObj;
+    private Vector3     m_targetCamPos;
 
-    public Transform m_Target;          // 카메라가 따라다닐 타겟 지정
-    Vector3 m_Offset;                   // 카메라 위치
-
-
-    public float CameraMoveSpeed = 120.0f;
-    public GameObject CameraFollowObj;
-    float rotX = 0.01f;
-    float rotY = 0.0f;
+    private float       m_AimRange = 2.5f;
+    private float       m_RotateSpeed = 100.0f;
+    private float       rotX = 0.0f;
+    private float       rotY = 0.0f;
 
     void Start()
     {
+        // 카메라 회전 각도 저장
         Vector3 rot = transform.localRotation.eulerAngles;
         rotY = rot.y;
         rotX = rot.x;
 
-        m_Offset = new Vector3(0, 0, 0);
+        // 카메라가 따라다닐 오브젝트 받아오기
+        CCameraTarget CameraTarget = m_Target.GetComponentInChildren<CCameraTarget>();
+        m_TargetFollowObj = CameraTarget.GetComponent<Transform>();
+
+        // 플레이어 에임 모드
+        m_PlayerAim = GetComponentInChildren<CPlayerAim>();
+
+        // 메인 카메라 가져오기
+        m_MainCamera = Camera.main;
+
+        // 레이캐스트 포인트 받기
+        m_TargetContoller = m_Target.GetComponent<CPlayerContoller>();
     }
 
     void LateUpdate()
@@ -32,66 +49,45 @@ public class CPlayerFollow : MonoBehaviour {
 
     void CameraUpdater()
     {
-        Transform target = CameraFollowObj.transform;
+        // 타겟의 포지션을 새로 받아옴
+        m_TargetPos = m_Target.transform.position;
 
-        float step = CameraMoveSpeed * Time.smoothDeltaTime;
-        //transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+        // 새로운 포지션 생성
+        Vector3 newCameraPos = Vector3.Lerp(transform.position, m_TargetPos, m_fSmoothing * Time.deltaTime);
+        newCameraPos.y = 0f;
 
-        Vector3 temp = Vector3.Lerp(transform.position, target.position, m_fSmoothing * Time.deltaTime);
-        temp.y = m_Offset.y;
-
-        transform.position = temp;
-
+        // 새로운 포지션으로 적용
+        transform.position = newCameraPos;
     }
 
 
-    /// <summary>
-    /// zoom  클래스 정리 해야함
-    /// </summary>
-
     void FixedUpdate()
     {
-        zoom zoom = GetComponentInChildren<zoom>();
+        // 마우스 우클릭 했을 때
         if (Input.GetMouseButton(1))
         {
-            Camera cam = Camera.main;
-
-            Vector3 targetCamPos;
-
-            Vector3 RayPoint = m_Target.GetComponent<CPlayerContoller>().getRayPoint();
-
-            targetCamPos = m_Target.position + RayPoint / 2.5f;
-            targetCamPos.y = 0f;
-            //transform.position = targetCamPos;
-            //transform.position = Vector3.Lerp(targetCamPos, transform.position, m_fSmoothing * Time.smoothDeltaTime);
-            
-            zoom.transform.position = Vector3.Lerp(zoom.transform.position, targetCamPos, m_fSmoothing * Time.smoothDeltaTime);
-
+            // 레이캐스트 벡터 받아오기
+            m_RayPoint = m_TargetContoller.getRayPoint();
+            m_targetCamPos = m_Target.position + m_RayPoint / m_AimRange;
+            m_targetCamPos.y = 0f;
+            m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, m_targetCamPos, m_fSmoothing * Time.smoothDeltaTime);
         }
         else
         {
-
-            zoom.transform.position = Vector3.Lerp(zoom.transform.position, transform.position, m_fSmoothing * Time.smoothDeltaTime);
-
-            Debug.Log(zoom.transform.position);
+            // 카메라 원래 장소로 리셋하기
+            m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, transform.position, m_fSmoothing * Time.smoothDeltaTime);
 
             if (Input.GetKey("e"))
             {
-                rotY += 100.0f * Time.smoothDeltaTime;
+                rotY += m_RotateSpeed * Time.smoothDeltaTime;
             }
             else if (Input.GetKey("q"))
             {
-                rotY += -100.0f * Time.smoothDeltaTime;
+                rotY += -m_RotateSpeed * Time.smoothDeltaTime;
             }
 
             Quaternion LocalRotation = Quaternion.Euler(rotX, rotY, 0.0f);
             transform.rotation = LocalRotation;
         }
     }
-
-    //public void SetPlayerFollow(Transform _player)
-    //{
-    //    Debug.Log(_player);
-    //    m_Target = _player;
-    //}
 }

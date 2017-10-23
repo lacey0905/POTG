@@ -15,12 +15,10 @@ public class CGameManager : MonoBehaviour {
 
     void Start()
     {
-
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
 
     }
-   
 }

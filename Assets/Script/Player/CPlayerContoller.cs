@@ -35,6 +35,8 @@ public class CPlayerContoller : MonoBehaviour {
         SetPlayerMovement(h, v);
         SetPlayerTurning();
         SetPlayerAnimating(h, v);
+
+
     }
 
     // 캐릭터 이동 셋팅
