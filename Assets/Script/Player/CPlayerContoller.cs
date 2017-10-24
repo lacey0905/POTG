@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class CPlayerContoller : MonoBehaviour {
 
-    public float m_fSpeed = 6.0f;            // 캐릭터 스피드
+    public float m_fSpeed = 6.0f;                   // 캐릭터 스피드
 
-    Vector3         m_PlayerMovement;           // 캐릭터 좌표
-    Animator        m_PlayerAnim;               // 애니메이션
+    Vector3         m_PlayerMovement;               // 캐릭터 좌표
+    Animator        m_PlayerAnim;                   // 애니메이션
     Rigidbody       m_PlayerRigidBody;
 
-    Transform       m_MainCamera;               // 메인 카메라
-    Vector3         m_CameraMovePos;            // 카메라 기준 이동 방향
+    Transform       m_MainCamera;                   // 메인 카메라
+    Vector3         m_CameraMovePos;                // 카메라 기준 이동 방향
 
-    public Vector3  m_RayPoint;                 //  레이캐스트 포인터 좌표
-    public int      m_iFloorMask;                           //  레이캐스트 좌표를 얻을 바닥
-    public float    m_fCamRayLength = 100f;             //  레이캐스트 레이저 길이
+    public Vector3  m_RayPoint;                     //  레이캐스트 포인터 좌표
+    public int      m_iFloorMask;                   //  레이캐스트 좌표를 얻을 바닥
+    public float    m_fCamRayLength = 100f;         //  레이캐스트 레이저 길이
 
     void Awake()
     {
@@ -26,19 +26,8 @@ public class CPlayerContoller : MonoBehaviour {
         m_MainCamera = Camera.main.transform;       // 메인 카메라
     }
 
-    void FixedUpdate()
-    {
-        // 키 입력
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-
-        SetPlayerMovement(h, v);
-        SetPlayerTurning();
-        SetPlayerAnimating(h, v);
-    }
-
     // 캐릭터 이동 셋팅
-    void SetPlayerMovement(float h, float v)
+    public void SetPlayerMovement(float h, float v)
     {
         // 방향키가 눌렸을 때
         if (h != 0 || v != 0) {
@@ -57,7 +46,7 @@ public class CPlayerContoller : MonoBehaviour {
     }
 
     // 캐릭터 회전 레이캐스트
-    void SetPlayerTurning()
+    public void SetPlayerTurning()
     {
         // 마우스 포인터 받기
         Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
