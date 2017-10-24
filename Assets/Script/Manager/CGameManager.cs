@@ -10,7 +10,7 @@ public class CGameManager : MonoBehaviour {
 
     private void Awake()
     {
-        m_Camera = Camera.main.GetComponent<CPlayerFollow>();
+        //m_Camera = GetComponent<CPlayerFollow>();
     }
 
     void Start()
@@ -19,6 +19,5 @@ public class CGameManager : MonoBehaviour {
 
     void FixedUpdate()
     {
-
     }
 }

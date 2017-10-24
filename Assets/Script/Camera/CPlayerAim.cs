@@ -2,4 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CPlayerAim : MonoBehaviour {}
+public class CPlayerAim : MonoBehaviour {
+
+}
