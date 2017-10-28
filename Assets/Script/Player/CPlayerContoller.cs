@@ -17,14 +17,37 @@ public class CPlayerContoller : MonoBehaviour {
     public int      m_iFloorMask;                   //  레이캐스트 좌표를 얻을 바닥
     public float    m_fCamRayLength = 100f;         //  레이캐스트 레이저 길이
 
+    public CWeaponManager m_Weapon;
+
+
     void Awake()
     {
         m_PlayerRigidBody = GetComponent<Rigidbody>();
         m_PlayerAnim =  GetComponent<Animator>();
         
-        m_iFloorMask = LayerMask.GetMask("Floor");  // Floor 마스크 레이어
+        //m_iFloorMask = LayerMask.GetMask("Floor");  // Floor 마스크 레이어
         m_MainCamera = Camera.main.transform;       // 메인 카메라
+
+        m_Weapon = GetComponentInChildren<CWeaponManager>();
+
     }
+
+    // 우클릭
+    public void SetAimModeActvie(Vector3 _mousePointPos) {
+        m_Weapon.SetLaserActive(_mousePointPos);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     // 캐릭터 이동 셋팅
     public void SetPlayerMovement(float h, float v)
@@ -45,34 +68,49 @@ public class CPlayerContoller : MonoBehaviour {
         }
     }
 
-    // 캐릭터 회전 레이캐스트
-    public void SetPlayerTurning()
+    // 캐릭터 회전
+    public void SetPlayerTurning(Vector3 _mousePos)
     {
-        // 마우스 포인터 받기
-        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // 마우스 포인터에서 캐릭터 거리
+        Vector3 playerToMouse = _mousePos - transform.position;
+        playerToMouse.y = 0f;
 
-        // 충돌 확인
-        RaycastHit floorHit;
+        Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
 
-        // 바닥에 충돌하면 실행
-        if (Physics.Raycast(camRay, out floorHit, m_fCamRayLength, m_iFloorMask))
-        {
+        transform.rotation = newRotation;
 
-            // 마우스 포인터에서 캐릭터 거리
-            Vector3 playerToMouse = floorHit.point - transform.position;
-
-            playerToMouse.y = 0f;
-
-            m_RayPoint = playerToMouse;
-
-            Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
-
-            // 캐릭터를 회전 함
-            m_PlayerRigidBody.MoveRotation(newRotation);
-        }
+        // 캐릭터를 회전 함
+        //m_PlayerRigidBody.MoveRotation(newRotation);
     }
 
-    public Vector3 getRayPoint() {
+
+    // 캐릭터 회전 레이캐스트
+    //public void SetPlayerTurning()
+    //{
+    //    // 마우스 포인터 받기
+    //    Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+    //    // 충돌 확인
+    //    RaycastHit floorHit;
+
+    //    // 바닥에 충돌하면 실행
+    //    if (Physics.Raycast(camRay, out floorHit, m_fCamRayLength, m_iFloorMask))
+    //    {
+    //        // 마우스 포인터에서 캐릭터 거리
+    //        Vector3 playerToMouse = floorHit.point - transform.position;
+
+    //        playerToMouse.y = 0f;
+
+    //        m_RayPoint = playerToMouse;
+
+    //        Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
+
+    //        // 캐릭터를 회전 함
+    //        m_PlayerRigidBody.MoveRotation(newRotation);
+    //    }
+    //}
+
+    public Vector3 GetRayPoint() {
         return m_RayPoint;
     }
 

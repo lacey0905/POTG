@@ -5,9 +5,14 @@ using UnityEngine;
 
 public class CGameManager : MonoBehaviour {
 
-    public CPlayerFollow m_Camera;            // 카메라
-    public GameObject m_MyPlayer;             // 로컬 플레이어
-    
+    public CPlayerFollow m_Camera;              // 카메라
+    public GameObject m_MyPlayer;               // 로컬 플레이어
+
+    public CRayFloor m_Floor;
+    public int m_iFloorMask;                    //  레이캐스트 좌표를 얻을 바닥
+
+    public Vector3 m_MousePoint;                // 마우스 포인터 위치
+
     CPlayerContoller m_MyController;
 
     void Awake()
@@ -17,6 +22,9 @@ public class CGameManager : MonoBehaviour {
 
     void Start()
     {
+
+        m_iFloorMask = LayerMask.GetMask("Floor");  // Floor 마스크 레이어
+
         // 스폰 된 캐릭터 중에 나 자신인거 가져와서 m_MyPlayer에 컨트롤러로 넣음
         // 지금은 없으니까 에디터에서 집어 넣음
         //m_MyPlayer = 
@@ -37,20 +45,25 @@ public class CGameManager : MonoBehaviour {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
+        SetMousePointPos();                       // 마우스 포인터
+
         m_MyController.SetPlayerMovement(h, v);         // 캐릭터 이동 실행
-        m_MyController.SetPlayerTurning();              // 캐릭터 회전 실행
+        m_MyController.SetPlayerTurning(m_MousePoint);  // 캐릭터 회전 실행
         m_MyController.SetPlayerAnimating(h, v);        // 캐릭터 애니메이션 실행
+
+        m_Floor.SetRayFloorPos(m_MyPlayer.transform.position.y);
 
         // 마우스 우클릭 했을 때
         if (Input.GetMouseButton(1))
         {
             // 카메라 에임 모드 전환
-            m_Camera.SetAimMode(true, m_MyController.getRayPoint());
+            m_Camera.SetAimMode(true, m_MousePoint);
+            m_MyController.SetAimModeActvie(m_MousePoint);
         }
         else
         {
             // 카메라 에임 모드 해제
-            m_Camera.SetAimMode(false, m_MyController.getRayPoint());
+            m_Camera.SetAimMode(false, m_MyController.GetRayPoint());
 
             // 카메라 회전 키 입력
             if (Input.GetKey("e")) { m_Camera.SetRotation(-1); }
@@ -64,6 +77,21 @@ public class CGameManager : MonoBehaviour {
         {
             // 카메라 이동
             m_Camera.SetTargetPos(m_MyPlayer.transform.position);
+        }
+    }
+
+    public void SetMousePointPos()
+    {
+        // 마우스 포인터 받기
+        Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        // 충돌 확인
+        RaycastHit floorHit;
+
+        //바닥에 충돌하면 실행
+        if (Physics.Raycast(camRay, out floorHit, 100f, m_iFloorMask))
+        {
+            m_MousePoint = floorHit.point;
         }
     }
 }
