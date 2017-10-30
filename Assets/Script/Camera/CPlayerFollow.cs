@@ -60,8 +60,11 @@ public class CPlayerFollow : MonoBehaviour {
     public void SetAimMode(bool AimModeSet, Vector3 _rayPoint)
     {
         if (AimModeSet) {
-            m_targetCamPos = m_Target.position + _rayPoint / m_AimRange;
+            m_targetCamPos = m_Target.position - _rayPoint; // / m_AimRange;
             m_targetCamPos.y = 0f;
+            m_targetCamPos.x *= -1f;
+            m_targetCamPos.z *= -1f;
+
             m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, m_targetCamPos, m_fSmoothing * Time.smoothDeltaTime);
         }
         else

@@ -64,6 +64,7 @@ public class CGameManager : MonoBehaviour {
         {
             // 카메라 에임 모드 해제
             m_Camera.SetAimMode(false, m_MyController.GetRayPoint());
+            m_MyController.SetAimModeDis();
 
             // 카메라 회전 키 입력
             if (Input.GetKey("e")) { m_Camera.SetRotation(-1); }

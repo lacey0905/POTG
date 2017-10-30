@@ -37,17 +37,10 @@ public class CPlayerContoller : MonoBehaviour {
         m_Weapon.SetLaserActive(_mousePointPos);
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    // 우클릭 해제
+    public void SetAimModeDis() {
+        m_Weapon.SetLaserDis();
+    }
 
     // 캐릭터 이동 셋팅
     public void SetPlayerMovement(float h, float v)
