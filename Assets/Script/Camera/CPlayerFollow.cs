@@ -13,7 +13,7 @@ public class CPlayerFollow : MonoBehaviour {
 
     private Camera      m_MainCamera;               // 카메라
     private CPlayerAim  m_PlayerAim;                // Aim 컴포넌트
-    private Vector3     m_targetCamPos;             // Aim 모드 카메라 위치
+    private Vector3     m_targetCamPos = new Vector3(0, 0, 0);            // Aim 모드 카메라 위치
 
     private float       m_AimRange = 2.5f;          // Aim 범위
     private float       m_RotateSpeed = 100.0f;     // 회전 속도
@@ -57,15 +57,45 @@ public class CPlayerFollow : MonoBehaviour {
         transform.position = newCameraPos;
     }
 
+    Vector3 camRay;
+           // (3,3)
     public void SetAimMode(bool AimModeSet, Vector3 _rayPoint)
     {
         if (AimModeSet) {
-            m_targetCamPos = m_Target.position - _rayPoint; // / m_AimRange;
+
+
+            camRay = _rayPoint - m_PlayerAim.transform.position;
+
+
+            //카메라가 이동할 위치
+            m_targetCamPos = camRay;
+
+
+
+
+
+
+
+            //Vector3 _ray = _rayPoint - temp_ray; // (1,1)
+
+            //first_ray = _rayPoint; // (3,3)
+
+            //Vector3 inpRay = _rayPoint - m_Target.position;
+            ////       (3.3)      (4.4)         (0.0)
+
+            //m_targetCamPos = inpRay - _ray; //(1,1)
+
+            //   (3.3)          (3.3)           (0.0)                
+
+            //temp = _rayPoint - m_targetCamPos;
+
             m_targetCamPos.y = 0f;
-            m_targetCamPos.x *= -1f;
-            m_targetCamPos.z *= -1f;
+
+            m_targetCamPos = m_targetCamPos / 2.5f;
+
 
             m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, m_targetCamPos, m_fSmoothing * Time.smoothDeltaTime);
+
         }
         else
         {

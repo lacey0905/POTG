@@ -33,12 +33,14 @@ public class CPlayerContoller : MonoBehaviour {
     }
 
     // 우클릭
-    public void SetAimModeActvie(Vector3 _mousePointPos) {
+    public void SetAimModeActvie(Vector3 _mousePointPos)
+    {
         m_Weapon.SetLaserActive(_mousePointPos);
     }
 
     // 우클릭 해제
-    public void SetAimModeDis() {
+    public void SetAimModeDis()
+    {
         m_Weapon.SetLaserDis();
     }
 

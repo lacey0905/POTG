@@ -9,7 +9,7 @@ public class CRayFloor : MonoBehaviour {
     public void SetRayFloorPos(float _floorY)
     {
 
-        Debug.Log(_floorY);
+        //Debug.Log(_floorY);
 
         transform.position = new Vector3(this.transform.position.x, _floorY + m_fFloorHei, this.transform.position.z);
     }
