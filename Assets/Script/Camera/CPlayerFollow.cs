@@ -32,6 +32,7 @@ public class CPlayerFollow : MonoBehaviour {
 
         // 메인 카메라 가져오기
         m_MainCamera = GetComponentInChildren<Camera>();
+
     }
 
     // 카메라 셋팅
@@ -57,44 +58,17 @@ public class CPlayerFollow : MonoBehaviour {
         transform.position = newCameraPos;
     }
 
-    Vector3 camRay;
-           // (3,3)
     public void SetAimMode(bool AimModeSet, Vector3 _rayPoint)
     {
         if (AimModeSet) {
+            // 카메라가 이동한 거리
+            Vector3 camMove = m_PlayerAim.transform.position - m_Target.position; // 캐릭터
 
+            _rayPoint = _rayPoint - camMove;
 
-            camRay = _rayPoint - m_PlayerAim.transform.position;
+            _rayPoint.y = 0f;
 
-
-            //카메라가 이동할 위치
-            m_targetCamPos = camRay;
-
-
-
-
-
-
-
-            //Vector3 _ray = _rayPoint - temp_ray; // (1,1)
-
-            //first_ray = _rayPoint; // (3,3)
-
-            //Vector3 inpRay = _rayPoint - m_Target.position;
-            ////       (3.3)      (4.4)         (0.0)
-
-            //m_targetCamPos = inpRay - _ray; //(1,1)
-
-            //   (3.3)          (3.3)           (0.0)                
-
-            //temp = _rayPoint - m_targetCamPos;
-
-            m_targetCamPos.y = 0f;
-
-            m_targetCamPos = m_targetCamPos / 2.5f;
-
-
-            m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, m_targetCamPos, m_fSmoothing * Time.smoothDeltaTime);
+            m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, _rayPoint, m_fSmoothing * Time.smoothDeltaTime);
 
         }
         else
