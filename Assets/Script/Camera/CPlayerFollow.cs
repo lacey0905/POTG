@@ -61,8 +61,13 @@ public class CPlayerFollow : MonoBehaviour {
     public void SetAimMode(bool AimModeSet, Vector3 _rayPoint)
     {
         if (AimModeSet) {
-            // 카메라가 이동한 거리
-            Vector3 camMove = m_PlayerAim.transform.position - m_Target.position; // 캐릭터
+
+
+            _rayPoint.x = Mathf.Clamp(_rayPoint.x, m_Target.position.x - 10f, m_Target.position.x + 10f);
+            _rayPoint.z = Mathf.Clamp(_rayPoint.z, m_Target.position.z - 10f, m_Target.position.z + 10f);
+
+            Vector3 camMove = m_PlayerAim.transform.position - m_Target.position; 
+
 
             _rayPoint = _rayPoint - camMove;
 
