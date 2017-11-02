@@ -36,7 +36,7 @@ public class CPlayerFollow : MonoBehaviour {
     }
 
     // 카메라 셋팅
-    public void CameraSetup(GameObject _target) {
+    public void Setup(CCameraTarget _target) {
         CCameraTarget _CameraTarget = _target.GetComponentInChildren<CCameraTarget>();
         m_Target = _CameraTarget.GetComponent<Transform>();
 
@@ -58,30 +58,25 @@ public class CPlayerFollow : MonoBehaviour {
         transform.position = newCameraPos;
     }
 
-    public void SetAimMode(bool AimModeSet, Vector3 _rayPoint)
+    public void SetAimMode(Vector3 _rayPoint, float _aimClamp)
     {
-        if (AimModeSet) {
+        _rayPoint.x = Mathf.Clamp(_rayPoint.x, m_Target.position.x - _aimClamp, m_Target.position.x + _aimClamp);
+        _rayPoint.z = Mathf.Clamp(_rayPoint.z, m_Target.position.z - _aimClamp, m_Target.position.z + _aimClamp);
 
+        Vector3 camMove = m_PlayerAim.transform.position - m_Target.position; 
 
-            _rayPoint.x = Mathf.Clamp(_rayPoint.x, m_Target.position.x - 10f, m_Target.position.x + 10f);
-            _rayPoint.z = Mathf.Clamp(_rayPoint.z, m_Target.position.z - 10f, m_Target.position.z + 10f);
+        _rayPoint = _rayPoint - camMove;
+        _rayPoint.y = 0f;
 
-            Vector3 camMove = m_PlayerAim.transform.position - m_Target.position; 
-
-
-            _rayPoint = _rayPoint - camMove;
-
-            _rayPoint.y = 0f;
-
-            m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, _rayPoint, m_fSmoothing * Time.smoothDeltaTime);
-
-        }
-        else
-        {
-            // 카메라 원래 장소로 리셋하기
-            m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, transform.position, m_fSmoothing * Time.smoothDeltaTime);
-        }
+        m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, _rayPoint, m_fSmoothing * Time.smoothDeltaTime);
     }
+
+    public void SetDisAimMode()
+    {
+        // 카메라 원래 장소로 리셋하기
+        m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, transform.position, m_fSmoothing * Time.smoothDeltaTime);
+    }
+
 
     public void SetRotation(int _dir)
     {

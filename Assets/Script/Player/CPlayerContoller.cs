@@ -8,28 +8,21 @@ public class CPlayerContoller : MonoBehaviour {
 
     Vector3         m_PlayerMovement;               // 캐릭터 좌표
     Animator        m_PlayerAnim;                   // 애니메이션
-    Rigidbody       m_PlayerRigidBody;
 
     Transform       m_MainCamera;                   // 메인 카메라
     Vector3         m_CameraMovePos;                // 카메라 기준 이동 방향
 
-    public Vector3  m_RayPoint;                     //  레이캐스트 포인터 좌표
-    public int      m_iFloorMask;                   //  레이캐스트 좌표를 얻을 바닥
-    public float    m_fCamRayLength = 100f;         //  레이캐스트 레이저 길이
-
     public CWeaponManager m_Weapon;
-
 
     void Awake()
     {
-        m_PlayerRigidBody = GetComponent<Rigidbody>();
         m_PlayerAnim =  GetComponent<Animator>();
-        
-        //m_iFloorMask = LayerMask.GetMask("Floor");  // Floor 마스크 레이어
-        m_MainCamera = Camera.main.transform;       // 메인 카메라
-
         m_Weapon = GetComponentInChildren<CWeaponManager>();
+    }
 
+    public void SetMainCamera(Camera _main)
+    {
+        m_MainCamera = _main.GetComponent<Transform>();
     }
 
     // 우클릭
@@ -42,6 +35,11 @@ public class CPlayerContoller : MonoBehaviour {
     public void SetAimModeDis()
     {
         m_Weapon.SetLaserDis();
+    }
+
+    public void Attack(Vector3 _MousePos)
+    {
+        m_Weapon.Shooting(_MousePos);
     }
 
     // 캐릭터 이동 셋팅
@@ -73,40 +71,6 @@ public class CPlayerContoller : MonoBehaviour {
         Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
 
         transform.rotation = newRotation;
-
-        // 캐릭터를 회전 함
-        //m_PlayerRigidBody.MoveRotation(newRotation);
-    }
-
-
-    // 캐릭터 회전 레이캐스트
-    //public void SetPlayerTurning()
-    //{
-    //    // 마우스 포인터 받기
-    //    Ray camRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-    //    // 충돌 확인
-    //    RaycastHit floorHit;
-
-    //    // 바닥에 충돌하면 실행
-    //    if (Physics.Raycast(camRay, out floorHit, m_fCamRayLength, m_iFloorMask))
-    //    {
-    //        // 마우스 포인터에서 캐릭터 거리
-    //        Vector3 playerToMouse = floorHit.point - transform.position;
-
-    //        playerToMouse.y = 0f;
-
-    //        m_RayPoint = playerToMouse;
-
-    //        Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
-
-    //        // 캐릭터를 회전 함
-    //        m_PlayerRigidBody.MoveRotation(newRotation);
-    //    }
-    //}
-
-    public Vector3 GetRayPoint() {
-        return m_RayPoint;
     }
 
     public void SetPlayerAnimating(float h, float v)
