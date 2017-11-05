@@ -53,6 +53,9 @@ public class CGameManager : MonoBehaviour {
         // 마우스 우클릭 했을 때
         if (Input.GetMouseButton(1))
         {
+
+            m_LocalPlayerController.SetSpeed(2f);
+
             m_LocalPlayerController.Turn(m_RayMousePoint);
 
             // 카메라 에임 모드 전환
@@ -77,6 +80,7 @@ public class CGameManager : MonoBehaviour {
         else
         {
 
+            m_LocalPlayerController.SetSpeed(6f);
             m_LocalPlayerController.Turn(h, v);
 
             Cursor.visible = true;

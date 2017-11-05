@@ -105,6 +105,13 @@ public class CPlayerContoller : MonoBehaviour {
         m_PlayerAnim.SetBool("IsWalking", walking);
     }
 
+
+    public void SetSpeed(float _speed)
+    {
+        m_fSpeed = _speed;
+    }
+
+
     public void SetPlayerMove(Vector3 _moveTranform) { m_PlayerMovement = _moveTranform; }
     public Vector3 GetPlayerMove() { return m_PlayerMovement; }
     public float GetPlayerSpeed() { return m_fSpeed; }
