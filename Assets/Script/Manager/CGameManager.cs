@@ -31,6 +31,8 @@ public class CGameManager : MonoBehaviour {
         isShut = true;
     }
 
+   
+
     void FixedUpdate()
     {
         // 이동 입력 받기
@@ -41,9 +43,9 @@ public class CGameManager : MonoBehaviour {
         m_RayMousePoint = m_CameraManager.GetMousePoint();
 
         // 로컬 플레이어 행동
-        m_LocalPlayerController.SetPlayerMovement(h, v);                // 캐릭터 이동 실행
-        m_LocalPlayerController.SetPlayerTurning(m_RayMousePoint);      // 캐릭터 회전 실행
-        m_LocalPlayerController.SetPlayerAnimating(h, v);               // 캐릭터 애니메이션 실행
+        m_LocalPlayerController.Move(h, v);                     // 캐릭터 이동 실행
+        
+        m_LocalPlayerController.SetPlayerAnimating(h, v);       // 캐릭터 애니메이션 실행
 
         // RayFloor를 총구 기준으로 움직임 (조준을 정확하게 하기 위해)
         m_RayFloor.SetRayFloorPos(m_LocalPlayer.transform.position.y);
@@ -51,9 +53,12 @@ public class CGameManager : MonoBehaviour {
         // 마우스 우클릭 했을 때
         if (Input.GetMouseButton(1))
         {
+            m_LocalPlayerController.Turn(m_RayMousePoint);
+
             // 카메라 에임 모드 전환
             m_CameraManager.SetAimMode(m_RayMousePoint, 30.0f);
             m_LocalPlayerController.SetAimModeActvie(m_RayMousePoint);
+
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -64,10 +69,18 @@ public class CGameManager : MonoBehaviour {
                     m_CameraManager.GetComponentInChildren<CCameraShake>().StartShake();
                     StartCoroutine("conShut");
                 }
+
+
             }
+            Cursor.visible = false;
         }
         else
         {
+
+            m_LocalPlayerController.Turn(h, v);
+
+            Cursor.visible = true;
+
             // 카메라 에임 모드 해제
             m_CameraManager.SetDisAimMode();
             m_LocalPlayerController.SetAimModeDis();
@@ -77,8 +90,6 @@ public class CGameManager : MonoBehaviour {
             else if (Input.GetKey("q")) { m_CameraManager.SetRotation(1); }
         }
     }
-
- 
 
     void LateUpdate()
     {

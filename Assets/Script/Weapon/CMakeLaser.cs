@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CMakeLaser : MonoBehaviour {
 
-
     LineRenderer m_LaserPointer;
 
 	void Start () {

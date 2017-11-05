@@ -47,6 +47,7 @@ public class CPlayerFollow : MonoBehaviour {
     // 카메라 위치 갱신
     public void SetTargetPos(Vector3 _targetPos)
     {
+
         // 타겟의 포지션을 새로 받아옴
         m_TargetPos = _targetPos;
 

@@ -68,13 +68,10 @@ public class CCameraManager : MonoBehaviour {
     {
         // 타겟의 포지션을 새로 받아옴
         m_TargetPos = _targetPos;
-
-        // 새로운 포지션 생성
-        m_TargetPos = Vector3.Lerp(transform.position, m_TargetPos, m_fSmoothing * Time.deltaTime);
         m_TargetPos.y = 0f;
 
         // 새로운 포지션으로 적용
-        transform.position = m_TargetPos;
+        transform.position = Vector3.Lerp(transform.position, m_TargetPos, m_fSmoothing * Time.smoothDeltaTime);
     }
 
     public void SetAimMode(Vector3 _rayPoint, float _aimClamp)

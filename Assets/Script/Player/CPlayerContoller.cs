@@ -6,11 +6,13 @@ public class CPlayerContoller : MonoBehaviour {
 
     public float m_fSpeed = 6.0f;                   // 캐릭터 스피드
 
+    Rigidbody       m_Rigidbody;
+
     Vector3         m_PlayerMovement;               // 캐릭터 좌표
     Animator        m_PlayerAnim;                   // 애니메이션
 
     Transform       m_MainCamera;                   // 메인 카메라
-    Vector3         m_CameraMovePos;                // 카메라 기준 이동 방향
+    
 
     public CWeaponManager m_Weapon;
 
@@ -18,6 +20,7 @@ public class CPlayerContoller : MonoBehaviour {
     {
         m_PlayerAnim =  GetComponent<Animator>();
         m_Weapon = GetComponentInChildren<CWeaponManager>();
+        m_Rigidbody = GetComponent<Rigidbody>();
     }
 
     public void SetMainCamera(Camera _main)
@@ -28,6 +31,9 @@ public class CPlayerContoller : MonoBehaviour {
     // 우클릭
     public void SetAimModeActvie(Vector3 _mousePointPos)
     {
+
+        //float RotY = m_Weapon.transform.o eulerAngles.y;
+
         m_Weapon.SetLaserActive(_mousePointPos);
     }
 
@@ -43,26 +49,19 @@ public class CPlayerContoller : MonoBehaviour {
     }
 
     // 캐릭터 이동 셋팅
-    public void SetPlayerMovement(float h, float v)
+    public void Move(float _h, float _v)
     {
-        // 방향키가 눌렸을 때
-        if (h != 0 || v != 0) {
-            // 좌우 버튼을 눌렀을 때
-            if (h != 0) {
-                m_CameraMovePos = new Vector3(m_MainCamera.right.x * h, 0, m_MainCamera.right.z * h);
-                transform.position += m_CameraMovePos * m_fSpeed * Time.smoothDeltaTime;
-            }
-            // 상하 버튼을 눌렀을 때
-            if (v != 0)
-            {
-                m_CameraMovePos = new Vector3(m_MainCamera.up.x * v, 0, m_MainCamera.up.z * v);
-                transform.position += m_CameraMovePos * m_fSpeed * Time.smoothDeltaTime;
-            }
-        }
+        // 방향키가 눌리지 않았으면 리턴
+        if (_h == 0 && _v == 0) return;
+
+        Vector3 _Direction = GetStandardDirection(_h, _v);
+
+        m_Rigidbody.MovePosition(transform.position + (_Direction * m_fSpeed * Time.smoothDeltaTime));
     }
 
     // 캐릭터 회전
-    public void SetPlayerTurning(Vector3 _mousePos)
+    // RayCast Turn
+    public void Turn(Vector3 _mousePos)
     {
         // 마우스 포인터에서 캐릭터 거리
         Vector3 playerToMouse = _mousePos - transform.position;
@@ -70,8 +69,32 @@ public class CPlayerContoller : MonoBehaviour {
 
         Quaternion newRotation = Quaternion.LookRotation(playerToMouse);
 
-        transform.rotation = newRotation;
+        m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, newRotation, m_fSpeed * 20f * Time.smoothDeltaTime);
     }
+    // KeyBoard Turn
+    public void Turn(float _h, float _v)
+    {
+        // 방향키가 눌리지 않았으면 리턴
+        if (_h == 0 && _v == 0) return;
+
+        Vector3 _Direction = GetStandardDirection(_h, _v);
+
+        Quaternion newRotation = Quaternion.LookRotation(_Direction);
+        m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, newRotation, m_fSpeed * 2f * Time.smoothDeltaTime);
+    }
+
+
+
+    private Vector3 GetStandardDirection(float _h, float _v) {
+
+        Vector3 _Direction = new Vector3(0, 0, 0);
+        _Direction.x = (m_MainCamera.right.x * _h) + (m_MainCamera.up.x * _v);
+        _Direction.y = 0f;
+        _Direction.z = (m_MainCamera.right.z * _h) + (m_MainCamera.up.z * _v);
+
+        return _Direction;
+    }
+
 
     public void SetPlayerAnimating(float h, float v)
     {
