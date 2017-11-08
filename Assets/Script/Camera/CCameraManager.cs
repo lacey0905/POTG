@@ -21,6 +21,13 @@ public class CCameraManager : MonoBehaviour {
 
     Vector3 m_targetCamPos = new Vector3(0, 0, 0);            // Aim 모드 카메라 위치
 
+
+    void Awake()
+    {
+    }
+
+    GameObject floor;
+
     public void Setup(CPlayerAnchor _target)
     {
         // 메인 카메라 셋팅
@@ -39,6 +46,9 @@ public class CCameraManager : MonoBehaviour {
 
         // 카메라가 따라다닐 타겟
         m_Target = _target.GetComponent<Transform>();
+
+        floor = GameObject.Find("RayFloor");
+
     }
 
     public Camera GetMainCamera()

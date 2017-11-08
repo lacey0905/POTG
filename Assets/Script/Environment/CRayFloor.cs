@@ -8,4 +8,13 @@ public class CRayFloor : MonoBehaviour {
     {
         transform.position = new Vector3(this.transform.position.x, _floorY + m_fFloorHei, this.transform.position.z);
     }
+
+    private void Update()
+    {
+
+        Vector3 _pos = new Vector3(transform.position.x, 6.6f, transform.position.z);
+
+        transform.position = _pos;
+        transform.Rotate(0, 0, 0);
+    }
 }

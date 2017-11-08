@@ -4,23 +4,19 @@ using UnityEngine;
 
 public class CPlayerContoller : MonoBehaviour {
 
+    public CWeaponManager m_Weapon;
     public float m_fSpeed = 6.0f;                   // 캐릭터 스피드
 
     Rigidbody       m_Rigidbody;
-
     Vector3         m_PlayerMovement;               // 캐릭터 좌표
     Animator        m_PlayerAnim;                   // 애니메이션
-
     Transform       m_MainCamera;                   // 메인 카메라
-    
-
-    public CWeaponManager m_Weapon;
 
     void Awake()
     {
+        m_Rigidbody = GetComponent<Rigidbody>();
         m_PlayerAnim =  GetComponent<Animator>();
         m_Weapon = GetComponentInChildren<CWeaponManager>();
-        m_Rigidbody = GetComponent<Rigidbody>();
     }
 
     public void SetMainCamera(Camera _main)
@@ -31,10 +27,7 @@ public class CPlayerContoller : MonoBehaviour {
     // 우클릭
     public void SetAimModeActvie(Vector3 _mousePointPos)
     {
-
-        //float RotY = m_Weapon.transform.o eulerAngles.y;
-
-        m_Weapon.SetLaserActive(_mousePointPos);
+        m_Weapon.LaserActive(_mousePointPos);
     }
 
     // 우클릭 해제
@@ -83,8 +76,6 @@ public class CPlayerContoller : MonoBehaviour {
         m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, newRotation, m_fSpeed * 2f * Time.smoothDeltaTime);
     }
 
-
-
     private Vector3 GetStandardDirection(float _h, float _v) {
 
         Vector3 _Direction = new Vector3(0, 0, 0);
@@ -94,7 +85,6 @@ public class CPlayerContoller : MonoBehaviour {
 
         return _Direction;
     }
-
 
     public void SetPlayerAnimating(float h, float v)
     {
@@ -110,7 +100,6 @@ public class CPlayerContoller : MonoBehaviour {
     {
         m_fSpeed = _speed;
     }
-
 
     public void SetPlayerMove(Vector3 _moveTranform) { m_PlayerMovement = _moveTranform; }
     public Vector3 GetPlayerMove() { return m_PlayerMovement; }

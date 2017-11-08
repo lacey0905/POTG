@@ -11,30 +11,19 @@ public class CWeaponManager : MonoBehaviour {
     public int m_BulletMAX;
     public int m_BulletCurrent;
 
-    public bool isShut;
-
     public LineRenderer m_Laser;
-
 
     public GameObject LineArea;
     public Image Line;
     public Image RedLine;
 
-    int obj;
-
     void Awake() {
         m_Laser = GetComponentInChildren<LineRenderer>();
         m_Laser.gameObject.SetActive(false);
 
-        obj = LayerMask.GetMask("towerwall");
     }
 
-
-    public int gunDamage = 1;
-    public float fireRate = 0.25f;
     public float weaponRange = 50f;
-    public float hitForce = 100f;
-    public Transform gunEnd;
 
     private Camera fpsCam;
     private WaitForSeconds shotDuration = new WaitForSeconds(0.07f);
@@ -77,66 +66,57 @@ public class CWeaponManager : MonoBehaviour {
 
     float prevAngle;
 
-    public void SetLaserActive(Vector3 _pointPos) {
 
 
+
+    public void LaserActive(Vector3 _ray) {
+
+        // 라인 컴포넌트 활성화
         LineArea.SetActive(true);
-
 
         // 충돌 확인
         RaycastHit Hit;
 
-
-        float length = Vector3.Distance(_pointPos, transform.position);
+        float length = Vector3.Distance(_ray, transform.position);
         //length = new Vector3(length.x, length.y, 0.0f);
 
-
-
         Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
         mouse.y = 6f;
 
-
-        Debug.Log(mouse + " : " + transform.position);
-
-        //바닥에 충돌하면 실행
-
+        //Debug.Log(mouse + " : " + transform.position);
 
         if (Physics.Raycast(transform.position, transform.forward, out Hit, length))
         {
-
             Vector3 forward = transform.TransformDirection(Vector3.forward);
-
-            //Debug.DrawRay(transform.position, mouse, Color.green);
 
             if (Hit.collider.tag == "object")
             {
-                Debug.Log("충돌");
-                Debug.Log(Hit.transform.position);
-
                 Vector3 over = Camera.main.WorldToScreenPoint(Hit.point);
 
                 Vector3 over3 = over - Input.mousePosition;
 
+                Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+
+                Vector3 _dir = screenPos - Input.mousePosition;
+
+
                 over3 = new Vector3(over3.x, over3.y, 0.0f);
 
                 RedLine.transform.localScale = new Vector3(transform.localScale.x, over3.magnitude / 100, transform.localScale.z);
-                RedLine.transform.rotation = Quaternion.FromToRotation(Vector3.up, over3);
+                RedLine.transform.rotation = Quaternion.FromToRotation(Vector3.up, _dir);
 
                 LineArea.transform.position = Input.mousePosition;
 
-                Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
-                Vector3 hitp = Camera.main.WorldToScreenPoint(Hit.point);
+                
 
-                Vector3 v3 = screenPos - hitp;
+                Vector3 v3 = screenPos - over;
 
                 v3 = new Vector3(v3.x, v3.y, 0.0f);
 
                 Line.transform.localScale = new Vector3(transform.localScale.x, v3.magnitude / 100 * -1f, transform.localScale.z);
-                Line.transform.rotation = Quaternion.FromToRotation(Vector3.up, v3);
+                Line.transform.rotation = Quaternion.FromToRotation(Vector3.up, _dir);
 
                 Line.transform.position = screenPos;
-
             }
         }
         else

@@ -47,19 +47,21 @@ public class CGameManager : MonoBehaviour {
         
         m_LocalPlayerController.SetPlayerAnimating(h, v);       // 캐릭터 애니메이션 실행
 
-        // RayFloor를 총구 기준으로 움직임 (조준을 정확하게 하기 위해)
-        m_RayFloor.SetRayFloorPos(m_LocalPlayer.transform.position.y);
+        
 
         // 마우스 우클릭 했을 때
         if (Input.GetMouseButton(1))
         {
+            // RayFloor를 총구 기준으로 움직임 (조준을 정확하게 하기 위해)
+            //m_RayFloor.SetRayFloorPos(m_LocalPlayer.transform.position.y);
+
 
             m_LocalPlayerController.SetSpeed(2f);
 
             m_LocalPlayerController.Turn(m_RayMousePoint);
 
             // 카메라 에임 모드 전환
-            m_CameraManager.SetAimMode(m_RayMousePoint, 30.0f);
+            m_CameraManager.SetAimMode(m_RayMousePoint, 20.0f);
             m_LocalPlayerController.SetAimModeActvie(m_RayMousePoint);
 
 
