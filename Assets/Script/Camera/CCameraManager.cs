@@ -16,43 +16,37 @@ public class CCameraManager : MonoBehaviour {
     Vector3 m_RayMousePoint;                // 마우스 포인터 위치
     Vector3 m_TargetPos;                    // 타겟의 포지션 값
 
-    Camera m_MainCamera;                    // 메인 카메라
-    CPlayerAim m_PlayerAim;                 // Aim 컴포넌트
+    public Camera m_MainCamera;                    // 메인 카메라
+    public CPlayerAim m_PlayerAim;                 // Aim 컴포넌트
 
     Vector3 m_targetCamPos = new Vector3(0, 0, 0);            // Aim 모드 카메라 위치
 
-
-    void Awake()
+    void LateUpdate()
     {
+        if (m_Target != null)
+        {
+            // 카메라가 로컬 플레이어를 따라 다님
+            SetTargetPos(m_Target.transform.position);
+        }
     }
 
-    GameObject floor;
-
-    public void Setup(CPlayerAnchor _target)
+    public void Setup(Transform _target)
     {
-        // 메인 카메라 셋팅
-        m_MainCamera = GetComponentInChildren<Camera>();
-
         // Floor 마스크 레이어
-        m_iFloorMask = LayerMask.GetMask("Floor");
+        m_iFloorMask = LayerMask.GetMask("RayFloor");
 
         // 카메라 회전 각도 저장
         Vector3 rot = transform.localRotation.eulerAngles;
         rotY = rot.y;
         rotX = rot.x;
 
-        // 플레이어 에임 모드
-        m_PlayerAim = GetComponentInChildren<CPlayerAim>();
-
         // 카메라가 따라다닐 타겟
-        m_Target = _target.GetComponent<Transform>();
-
-        floor = GameObject.Find("RayFloor");
-
+        m_Target = _target;
     }
 
     public Camera GetMainCamera()
     {
+        if (!m_MainCamera) Debug.Log("메인 카메라가 없습니다.");
         return m_MainCamera;
     }
 
@@ -74,7 +68,7 @@ public class CCameraManager : MonoBehaviour {
     }
 
     // 카메라 위치 갱신
-    public void SetTargetPos(Vector3 _targetPos)
+    void SetTargetPos(Vector3 _targetPos)
     {
         // 타겟의 포지션을 새로 받아옴
         m_TargetPos = _targetPos;
@@ -94,13 +88,15 @@ public class CCameraManager : MonoBehaviour {
         _rayPoint = _rayPoint - camMove;
         _rayPoint.y = 0f;
 
-        m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, _rayPoint, m_fSmoothing * Time.smoothDeltaTime);
+        camMove = Vector3.Lerp(m_PlayerAim.transform.position, _rayPoint, m_fSmoothing * Time.smoothDeltaTime);
+        m_PlayerAim.SetAimMove(camMove);
     }
 
     public void SetDisAimMode()
     {
         // 카메라 원래 장소로 리셋하기
-        m_PlayerAim.transform.position = Vector3.Lerp(m_PlayerAim.transform.position, transform.position, m_fSmoothing * Time.smoothDeltaTime);
+        Vector3 camMove = Vector3.Lerp(m_PlayerAim.transform.position, transform.position, m_fSmoothing * Time.smoothDeltaTime);
+        m_PlayerAim.SetAimMove(camMove);
     }
 
     public void SetRotation(int _dir)
