@@ -2,32 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CPlayerManager : MonoBehaviour {
+public class CPlayerManager : CCameraManager {
 
-    CCameraManager m_MainCamera;
-    CPlayerContoller m_LocalPlayerController;       // 로컬 플레이어 컨트롤러
+    CPlayerContoller m_Controller;       // 로컬 플레이어 컨트롤러
 
-    Vector3 m_RayMousePoint;                        // 마우스 레이캐스트 포인트
+    Vector3 m_RayPoint;                        // 마우스 레이캐스트 포인트
 
     public CRayFloor m_RayFloor;                    // 메인 카메라의 레이캐스트와 충돌 체크할 Floor 
 
-    public void SetMainCamera(CCameraManager _camera)
+
+    void Awake()
     {
-        m_MainCamera = _camera;
+        m_Controller = GetComponent<CPlayerContoller>();
     }
-
-    public void Setup()
-    {
-        SetMainCamera
-
-    }
-
-	void Start () {
-		
-	}
 
     void FixedUpdate()
     {
+
+        //m_CameraManager.getR
+
+
         //if(isLocalPlayer)
 
         // 이동 입력 받기
@@ -35,9 +29,10 @@ public class CPlayerManager : MonoBehaviour {
         float v = Input.GetAxisRaw("Vertical");
 
         // 마우스 Ray 받기
-        m_RayMousePoint = m_MainCamera.GetMousePoint();
+        //m_RayPoint = m_CameraManager.GetMousePoint();
 
 
+        Debug.Log(GetMousePoint());
 
 
 

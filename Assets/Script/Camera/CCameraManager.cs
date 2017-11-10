@@ -21,16 +21,8 @@ public class CCameraManager : MonoBehaviour {
 
     Vector3 m_targetCamPos = new Vector3(0, 0, 0);            // Aim 모드 카메라 위치
 
-    void LateUpdate()
-    {
-        if (m_Target != null)
-        {
-            // 카메라가 로컬 플레이어를 따라 다님
-            SetTargetPos(m_Target.transform.position);
-        }
-    }
 
-    public void Setup(Transform _target)
+    void Start()
     {
         // Floor 마스크 레이어
         m_iFloorMask = LayerMask.GetMask("RayFloor");
@@ -39,21 +31,19 @@ public class CCameraManager : MonoBehaviour {
         Vector3 rot = transform.localRotation.eulerAngles;
         rotY = rot.y;
         rotX = rot.x;
-
-        // 카메라가 따라다닐 타겟
-        m_Target = _target;
     }
 
-    public Camera GetMainCamera()
+    public void SetFollowTarget(Transform _target)
     {
-        if (!m_MainCamera) Debug.Log("메인 카메라가 없습니다.");
-        return m_MainCamera;
+        m_Target = _target;
     }
 
     public Vector3 GetMousePoint()
     {
         // 마우스 포인터 받기
         Ray camRay = m_MainCamera.ScreenPointToRay(Input.mousePosition);
+
+        Debug.Log("레이 " + camRay);
 
         // 충돌 확인
         RaycastHit floorHit;
@@ -63,9 +53,17 @@ public class CCameraManager : MonoBehaviour {
         {
             m_RayMousePoint = floorHit.point;
         }
-
         return m_RayMousePoint;
     }
+
+
+    public Camera GetMainCamera()
+    {
+        if (!m_MainCamera) Debug.Log("메인 카메라가 없습니다.");
+        return m_MainCamera;
+    }
+
+    
 
     // 카메라 위치 갱신
     void SetTargetPos(Vector3 _targetPos)

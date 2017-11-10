@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class CGameManager : MonoBehaviour {
 
-    public CCameraManager m_CameraManager;          // 카메라 매니저
+    static public List<CPlayerManager> m_NetworkPlayerList;
+    static public CCameraManager m_CameraManager;          // 카메라 매니저
 
-    public CPlayerSetup m_LocalPlayer;                // 로컬 플레이어
+
+    public CCameraManager cam;
 
 
     //CPlayerContoller m_LocalPlayerController;       // 로컬 플레이어 컨트롤러
@@ -16,19 +17,35 @@ public class CGameManager : MonoBehaviour {
 
     //public CRayFloor m_RayFloor;                    // 메인 카메라의 레이캐스트와 충돌 체크할 Floor 
 
+    void LateUpdate()
+    {
+        //if (m_Target != null)
+        //{
+        //    // 카메라가 로컬 플레이어를 따라 다님
+        //    SetTargetPos(m_Target.transform.position);
+        //}
+    }
+
+    public void SetCamera()
+    {
+        
+    }
+
     void Start()
     {
 
-        if(m_LocalPlayer != null)
-        {
-            // 카메라 셋업
-            m_CameraManager.Setup(m_LocalPlayer.GetPlayerAnchor());
+        m_CameraManager = cam;
 
-            // 카메라 셋업을 하고 로컬 플레이어에게 카메라 매니저 전달
-            //m_LocalPlayer.SetMainCamera(m_CameraManager);
+        //if(m_LocalPlayer != null)
+        //{
+        //    // 카메라 셋업
+        //    m_CameraManager.Setup(m_LocalPlayer.GetPlayerAnchor());
+
+        //    // 카메라 셋업을 하고 로컬 플레이어에게 카메라 매니저 전달
+        //    //m_LocalPlayer.SetMainCamera(m_CameraManager);
 
 
-        }
+        //}
 
         //// 로컬 플레이어 컨트롤러
         //m_LocalPlayerController = m_LocalPlayer.GetComponent<CPlayerContoller>();
